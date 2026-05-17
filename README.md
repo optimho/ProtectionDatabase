@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Protection Device Database
+
+A web application for managing protection relays in electrical power systems — built for Contact Energy's engineering team. Tracks device metadata, KKS identifiers, maintenance history, master settings revisions, protection element configurations, and standalone protection reports.
+
+Multi-user with role-based access (user / admin). Deployed on a Raspberry Pi and accessible over Tailscale Funnel.
+
+---
+
+## Tech Stack
+
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 15 (App Router) |
+| Runtime | Bun |
+| Language | TypeScript |
+| Styling | TailwindCSS v4 |
+| Database | SQLite via better-sqlite3 (no ORM, raw SQL) |
+| Auth | better-auth (email/password, session cookies) |
+| Deployment | Raspberry Pi + Tailscale Funnel |
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- [Bun](https://bun.sh) v1.1+
+- Node is not required — Bun handles everything
+
+### First-time setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+
+# Initialise the database and seed ANSI device number library
+bun run init-db
+
+# Create the first admin user
+bun run seed-admin
+
+# Start the dev server
+bun --bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> **Important:** Always start with `bun --bun run dev` (not `bun run dev`). The `--bun` flag ensures better-sqlite3's native bindings are resolved correctly under Bun's runtime.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:3000](http://localhost:3000) and sign in with the admin credentials you set in `seed-admin`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Environment variables
 
-## Learn More
+Copy `.env.example` to `.env.local` and fill in:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+BETTER_AUTH_SECRET=<random 32+ character string>
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
+BETTER_AUTH_TRUSTED_ORIGINS=http://localhost:3000
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+For production (Raspberry Pi), replace `localhost:3000` with your network IP or Tailscale address.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Database Migrations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Migrations are idempotent TypeScript scripts in `scripts/`. Run them with:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npx tsx scripts/<migration-name>.ts
+```
+
+Available migrations (apply in order if setting up a fresh database after `init-db`):
+
+| Script | Purpose |
+|---|---|
+| `migrate-add-parts.ts` | Add relay type catalog (parts + manuals) |
+| `migrate-part-enhancements.ts` | Additional fields on parts table |
+| `migrate-ansi-elements.ts` | ANSI device numbers and protection elements |
+| `migrate-add-maintenance-period.ts` | Maintenance period and EIPC flag on devices |
+| `migrate-add-data-reports.ts` | Analytics / saved report definitions |
+
+> `init-db.ts` is the baseline. If starting fresh, run it first — it creates all tables and seeds the ANSI device number library.
+
+---
+
+## Production Build
+
+```bash
+bun --bun run build
+bun --bun run start
+```
+
+---
+
+## Project Structure
+
+```
+app/
+  (protected)/          ← all authenticated page routes (wrapped in sidebar layout)
+    dashboard/          ← device tree
+    devices/[id]/       ← device detail, edit, settings, elements, maintenance
+    reports/            ← protection report library
+    analytics/          ← run / save data reports
+    parts/              ← relay type catalog (admin)
+    form-templates/     ← dynamic form schema editor (admin)
+    ansi-device-numbers/ ← ANSI code library
+    users/              ← user management (admin)
+    admin/database/     ← backup / restore / clear (admin)
+  api/                  ← all REST endpoints
+  page.tsx              ← login / landing page
+
+components/             ← reusable React components
+lib/                    ← server-side data layer (db, queries, files)
+scripts/                ← one-off db init & migration scripts
+data/                   ← SQLite database file (app.db)
+public/uploads/         ← compressed file storage (reports, settings, test results)
+```
+
+See `manual.md` for the user manual — written for engineers using the app day-to-day.
+
+See `spec.md` for the full technical specification including database schema, all API endpoints, and architectural decisions.
+
+See `deploy.md` for step-by-step Raspberry Pi deployment instructions.

@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# app data — never commit the live database or uploaded files
+/data/app.db
+/data/app.db-wal
+/data/app.db-shm
+/public/uploads/
