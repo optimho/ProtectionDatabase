@@ -2,13 +2,13 @@
  * Creates the data_reports table for saved analytical report definitions.
  * Run: npx tsx scripts/migrate-add-data-reports.ts
  */
-import Database from "better-sqlite3";
+import { Database } from "bun:sqlite";
 
 const db = new Database("data/app.db");
 db.exec("PRAGMA journal_mode=WAL;");
 db.exec("PRAGMA foreign_keys=ON;");
 
-const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='data_reports'").get();
+const tables = db.query("SELECT name FROM sqlite_master WHERE type='table' AND name='data_reports'").get();
 
 if (tables) {
   console.log("data_reports table already exists — skipping.");

@@ -33,7 +33,7 @@ This manual is written for engineers and technicians using the Protection Device
 ### Development (on your local machine)
 
 ```bash
-bun run dev
+bun --bun run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.

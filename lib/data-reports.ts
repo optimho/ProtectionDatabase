@@ -11,7 +11,7 @@
  * { columns, rows, summary } structure that the analytics page renders as
  * a table and can export to CSV.
  *
- * NOTE: This file imports better-sqlite3 indirectly via db.ts and must
+ * NOTE: This file imports bun:sqlite indirectly via db.ts and must
  * never be imported by client components. Use lib/report-types.ts for
  * the REPORT_TYPES constant in client code.
  */
@@ -90,7 +90,7 @@ export async function runReport(report: DataReport): Promise<ReportResult> {
     case "device_inventory":
       return runDeviceInventory(params);
     case "maintenance_due":
-      return runMaintenanceDue();
+      return runMaintenanceDue(params);
     case "eipc_compliance":
       return runEipcCompliance();
     case "maintenance_history":
@@ -140,9 +140,13 @@ async function runDeviceInventory(params: ReportParameters): Promise<ReportResul
 
 // ── Maintenance Due ───────────────────────────────────────────────────────
 
-async function runMaintenanceDue(): Promise<ReportResult> {
+async function runMaintenanceDue(params: ReportParameters): Promise<ReportResult> {
+  const where = params.station ? "AND d.kks_station = ?" : "";
+  const args = params.station ? [params.station] : [];
+
   const rows = await query<Record<string, string | number | null>>(
     `SELECT
+       d.kks_station                                    AS "Station",
        d.kks_full                                       AS "KKS Code",
        d.device_location                                AS "Location",
        COALESCE(MAX(m.date), '—')                       AS "Last Maintenance",
@@ -159,13 +163,17 @@ async function runMaintenanceDue(): Promise<ReportResult> {
        END                                              AS "Status"
      FROM devices d
      LEFT JOIN maintenance m ON m.device_id = d.id
+     WHERE 1=1 ${where}
      GROUP BY d.id
      HAVING "Status" IN ('OVERDUE', 'Overdue — never maintained')
-     ORDER BY "Next Due" ASC, d.kks_full ASC`
+     ORDER BY d.kks_station ASC, "Next Due" ASC, d.kks_full ASC`,
+    args
   );
 
+  const scopeLabel = params.station ? ` in station ${params.station}` : "";
   return {
     columns: [
+      ...(!params.station ? [{ key: "Station", label: "Station" }] : []),
       { key: "KKS Code", label: "KKS Code" },
       { key: "Location", label: "Location" },
       { key: "Last Maintenance", label: "Last Maintenance" },
@@ -173,7 +181,7 @@ async function runMaintenanceDue(): Promise<ReportResult> {
       { key: "Status", label: "Status" },
     ],
     rows,
-    summary: rows.length === 0 ? "No devices overdue" : `${rows.length} device${rows.length !== 1 ? "s" : ""} overdue`,
+    summary: rows.length === 0 ? `No devices overdue${scopeLabel}` : `${rows.length} device${rows.length !== 1 ? "s" : ""} overdue${scopeLabel}`,
   };
 }
 

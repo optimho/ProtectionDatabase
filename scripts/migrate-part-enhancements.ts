@@ -1,11 +1,11 @@
-import Database from "better-sqlite3";
+import { Database } from "bun:sqlite";
 import { mkdirSync } from "fs";
 
 const db = new Database("data/app.db");
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function hasColumn(table: string, column: string): boolean {
-  return (db.prepare(`PRAGMA table_info(${table})`).all() as any[]).some(
+  return (db.query(`PRAGMA table_info(${table})`).all() as any[]).some(
     (col) => col.name === column
   );
 }

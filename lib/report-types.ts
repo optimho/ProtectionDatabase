@@ -2,13 +2,12 @@
  * lib/report-types.ts — Client-safe analytics report type definitions
  *
  * This file intentionally contains NO server-side imports (no db, no fs,
- * no better-sqlite3). It exists so the analytics page component can import
+ * no bun:sqlite). It exists so the analytics page component can import
  * the report type labels and descriptions without pulling the full
  * data-reports module into the browser bundle.
  *
  * If REPORT_TYPES were imported directly from data-reports.ts, Next.js
- * would try to bundle better-sqlite3 (a native Node.js module) into the
- * client bundle and fail with "Module not found: Can't resolve 'fs'".
+ * would try to bundle server-only modules into the client bundle and fail.
  *
  * data-reports.ts re-exports from here so server-side code has one import.
  */

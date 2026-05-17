@@ -18,12 +18,12 @@ Deployed on a Raspberry Pi and exposed over Tailscale Funnel.
 | Runtime | Bun |
 | Language | TypeScript |
 | Styling | TailwindCSS v4 + @tailwindcss/postcss |
-| Database | SQLite via better-sqlite3 (no ORM, raw SQL) |
+| Database | SQLite via bun:sqlite (no ORM, raw SQL) |
 | Auth | better-auth (email/password, session cookies) |
 | File storage | Compressed gzip files in `public/uploads/` |
 | Deployment | Raspberry Pi + Tailscale Funnel |
 
-> **Note:** The server must be started with `bun --bun run dev/start`. Without `--bun`, better-sqlite3's native Node bindings fail to resolve under Bun.
+> **Note:** The server must be started with `bun --bun run dev/start`. Without `--bun`, `bun:sqlite` is not available server-side.
 
 ---
 
@@ -565,7 +565,7 @@ All database access goes through `lib/db.ts` helpers — no ORM. Each domain mod
 | `auth-client.ts` | better-auth client SDK (`useSession`, `signIn`, `signOut`) |
 | `report-types.ts` | Client-safe `REPORT_TYPES` constant (no server imports) |
 
-> `report-types.ts` exists as a separate file so the client bundle can import report type labels without pulling in better-sqlite3 (a Node.js native module).
+> `report-types.ts` exists as a separate file so the client bundle can import report type labels without pulling in server-side SQLite imports.
 
 ---
 

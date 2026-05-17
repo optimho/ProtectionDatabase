@@ -1,11 +1,12 @@
 import { betterAuth } from "better-auth";
-import type BetterSqlite3 from "better-sqlite3";
+import type { Database as BunDatabase } from "bun:sqlite";
 
 let _auth: ReturnType<typeof betterAuth> | null = null;
 
 function getAuth() {
   if (!_auth) {
-    const Database = require("better-sqlite3") as typeof BetterSqlite3;
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { Database } = require("bun:sqlite") as { Database: typeof BunDatabase };
     _auth = betterAuth({
       database: new Database("data/app.db") as unknown as Parameters<typeof betterAuth>[0]["database"],
       emailAndPassword: { enabled: true },

@@ -28,7 +28,7 @@ export default function AnalyticsPage() {
   const isAdmin = (session?.user as any)?.role === "admin";
 
   const [reports, setReports] = useState<SavedReport[]>([]);
-  const [devices, setDevices] = useState<{ id: string; kks_full: string; device_type: string }[]>([]);
+  const [devices, setDevices] = useState<{ id: string; kks_full: string; kks_station: string; device_type: string }[]>([]);
   const [showNew, setShowNew] = useState(false);
   const [newForm, setNewForm] = useState(emptyNew);
   const [creating, setCreating] = useState(false);
@@ -165,6 +165,20 @@ export default function AnalyticsPage() {
                 <input type="text" value={newForm.station}
                   onChange={(e) => setNewForm((p) => ({ ...p, station: e.target.value }))}
                   className={inp} placeholder="e.g. OKI (leave blank for all)" />
+              </div>
+            )}
+            {/* Station filter (maintenance_due) */}
+            {newForm.report_type === "maintenance_due" && (
+              <div>
+                <label className="block text-xs font-medium text-slate-600 mb-1">Station</label>
+                <select value={newForm.station}
+                  onChange={(e) => setNewForm((p) => ({ ...p, station: e.target.value }))}
+                  className={inp}>
+                  <option value="">All stations</option>
+                  {[...new Set(devices.map((d) => d.kks_station))].sort().map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
               </div>
             )}
             {/* Device or station filter (elements_per_relay) */}

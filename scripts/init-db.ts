@@ -1,4 +1,4 @@
-import Database from "better-sqlite3";
+import { Database } from "bun:sqlite";
 import { mkdirSync } from "fs";
 
 mkdirSync("data", { recursive: true });
@@ -258,7 +258,7 @@ const ansiSeed = [
   { device_number: "87L", common_name: "Line Differential Relay",              description: "Differential protection applied to a transmission or distribution line." },
 ];
 
-const insertAnsi = db.prepare(
+const insertAnsi = db.query(
   "INSERT OR IGNORE INTO ansi_device_numbers (id, device_number, common_name, description) VALUES (?, ?, ?, ?)"
 );
 for (const row of ansiSeed) {

@@ -2,14 +2,14 @@
  * Adds maintenance_period_years column to the devices table.
  * Run: npx tsx scripts/migrate-add-maintenance-period.ts
  */
-import Database from "better-sqlite3";
+import { Database } from "bun:sqlite";
 
 const db = new Database("data/app.db");
 db.exec("PRAGMA journal_mode=WAL;");
 db.exec("PRAGMA foreign_keys=ON;");
 
 // Check if column already exists
-const cols = db.prepare("PRAGMA table_info(devices)").all() as { name: string }[];
+const cols = db.query("PRAGMA table_info(devices)").all() as { name: string }[];
 const exists = cols.some((c) => c.name === "maintenance_period_years");
 
 if (exists) {

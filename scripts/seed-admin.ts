@@ -4,7 +4,7 @@
  *
  * Run: bun run seed-admin
  */
-import Database from "better-sqlite3";
+import { Database } from "bun:sqlite";
 import { scryptAsync } from "@noble/hashes/scrypt.js";
 
 const config = { N: 16384, r: 16, p: 1, dkLen: 64 };
@@ -28,7 +28,7 @@ async function main() {
   const db = new Database("data/app.db");
   db.exec("PRAGMA foreign_keys=ON;");
 
-  const adminExists = db.prepare("SELECT id FROM user WHERE role = 'admin'").get();
+  const adminExists = db.query("SELECT id FROM user WHERE role = 'admin'").get();
   if (adminExists) {
     console.log("An admin user already exists — skipping seed.");
     console.log("Use the User Admin page in the app to manage accounts.");
@@ -43,11 +43,11 @@ async function main() {
 
   const hash = await hashPassword(password);
 
-  db.prepare(
+  db.query(
     "INSERT INTO user (id, name, email, emailVerified, role) VALUES (?, ?, ?, 1, 'admin')"
   ).run(id, name, email);
 
-  db.prepare(
+  db.query(
     "INSERT INTO account (id, accountId, providerId, userId, password) VALUES (?, ?, 'credential', ?, ?)"
   ).run(accountId, accountId, id, hash);
 
