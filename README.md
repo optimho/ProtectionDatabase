@@ -1,6 +1,10 @@
 # Protection Device Database
 
-A web application for managing protection relays in electrical power systems — built for Contact Energy's engineering team. Tracks device metadata, KKS identifiers, maintenance history, master settings, protection reports, uploaded manuals, and protection elements.
+<p align="center">
+  <img src="./public/readme-banner.svg" alt="Protection Device Database banner" width="100%" />
+</p>
+
+A web application for managing protection relays in electrical power systems — built for Contact Energy's engineering team. Tracks device metadata, KKS identifiers, maintenance history, master settings, protection functional reports, and device manuals in one place.
 
 Multi-user with role-based access (user / admin). Deployed on a Raspberry Pi and accessible over Tailscale Funnel.
 
