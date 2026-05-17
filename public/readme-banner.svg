@@ -1,104 +1,100 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
-  <title id="title">ProtectionDatabase industrial banner</title>
-  <desc id="desc">Industrial-styled banner for the ProtectionDatabase repository featuring switchgear, relay panels, and power system motifs.</desc>
+  <title id="title">ProtectionDatabase banner using repository logo</title>
+  <desc id="desc">Banner for ProtectionDatabase styled to match the application UI and using the repository logo asset prominently.</desc>
+
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0b1220" />
-      <stop offset="55%" stop-color="#111827" />
-      <stop offset="100%" stop-color="#1f2937" />
+    <linearGradient id="pageBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
     </linearGradient>
-    <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#94a3b8" />
-      <stop offset="100%" stop-color="#475569" />
+
+    <linearGradient id="sidebarBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
     </linearGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#f59e0b" />
-      <stop offset="50%" stop-color="#38bdf8" />
-      <stop offset="100%" stop-color="#22c55e" />
-    </linearGradient>
-    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
-      <path d="M24 0H0V24" fill="none" stroke="#334155" stroke-width="1" opacity="0.35" />
-    </pattern>
+
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
   </defs>
 
-  <rect width="1200" height="320" rx="24" fill="url(#bg)" />
-  <rect width="1200" height="320" rx="24" fill="url(#grid)" />
+  <rect width="1200" height="320" rx="24" fill="url(#pageBg)"/>
 
-  <g opacity="0.18">
-    <circle cx="1030" cy="72" r="120" fill="#38bdf8" />
-    <circle cx="1125" cy="248" r="140" fill="#f59e0b" />
+  <!-- Outer shell -->
+  <rect x="28" y="24" width="1144" height="272" rx="24" fill="#f1f5f9" stroke="#cbd5e1"/>
+
+  <!-- Sidebar -->
+  <rect x="28" y="24" width="236" height="272" rx="24" fill="url(#sidebarBg)"/>
+  <path d="M264 24 L264 296" stroke="#334155"/>
+
+  <!-- Logo card -->
+  <g filter="url(#cardShadow)">
+    <rect x="52" y="48" width="188" height="92" rx="14" fill="#ffffff"/>
+  </g>
+  <image href="/logo.jpg" x="68" y="62" width="156" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <text x="56" y="160" fill="#94a3b8" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" letter-spacing="1.6">
+    PROTECTION DEVICE DATABASE
+  </text>
+
+  <!-- Sidebar nav -->
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="48" y="184" width="196" height="36" rx="8" fill="#334155"/>
+    <text x="68" y="207" fill="#ffffff" font-size="14" font-weight="700">Dashboard</text>
+
+    <text x="68" y="241" fill="#cbd5e1" font-size="14">Analytics</text>
+    <text x="68" y="267" fill="#cbd5e1" font-size="14">Reports</text>
   </g>
 
-  <g transform="translate(70 52)">
-    <rect x="0" y="0" width="160" height="216" rx="16" fill="#0f172a" stroke="url(#steel)" stroke-width="3" />
-    <rect x="18" y="18" width="124" height="180" rx="10" fill="#111827" stroke="#64748b" stroke-width="2" />
-    <rect x="34" y="34" width="92" height="20" rx="6" fill="#1e293b" />
-    <text x="80" y="49" text-anchor="middle" fill="#cbd5e1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="10" font-weight="700">RELAY PANEL</text>
-
-    <circle cx="54" cy="84" r="8" fill="#22c55e" />
-    <circle cx="80" cy="84" r="8" fill="#f59e0b" />
-    <circle cx="106" cy="84" r="8" fill="#38bdf8" />
-
-    <rect x="38" y="106" width="84" height="44" rx="8" fill="#020617" stroke="#38bdf8" stroke-width="2" />
-    <path d="M48 129 H70 L78 119 L88 137 L98 123 L112 123" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-
-    <g stroke="#94a3b8" stroke-width="3" stroke-linecap="round">
-      <path d="M46 168 V188" />
-      <path d="M64 168 V194" />
-      <path d="M82 168 V186" />
-      <path d="M100 168 V192" />
-      <path d="M118 168 V188" />
-    </g>
-  </g>
-
-  <g transform="translate(270 78)">
-    <text x="0" y="0" fill="#f8fafc" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="52" font-weight="800">
-      ProtectionDatabase
-    </text>
-    <text x="0" y="46" fill="#cbd5e1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="500">
-      Industrial protection records for relays, maintenance, reports, and field history.
+  <!-- Main content -->
+  <g transform="translate(298 56)" font-family="Arial, Helvetica, sans-serif">
+    <text x="0" y="0" fill="#0f172a" font-size="44" font-weight="700">ProtectionDatabase</text>
+    <text x="0" y="34" fill="#475569" font-size="18">
+      Maintenance records, relay settings, manuals, reports, and protection history together.
     </text>
 
-    <g transform="translate(0 92)">
-      <rect x="0" y="0" width="204" height="44" rx="22" fill="#111827" stroke="#475569" />
-      <path d="M22 28 H42 L50 16 L60 34 L70 22 L88 22" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="102" y="28" text-anchor="middle" fill="#e2e8f0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">Relay settings</text>
+    <!-- top pills -->
+    <g transform="translate(0 56)">
+      <rect x="0" y="0" width="132" height="38" rx="10" fill="#2563eb"/>
+      <text x="66" y="24" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">Dashboard</text>
 
-      <rect x="220" y="0" width="228" height="44" rx="22" fill="#111827" stroke="#475569" />
-      <g transform="translate(240 12)">
-        <rect x="0" y="0" width="18" height="20" rx="3" fill="none" stroke="#38bdf8" stroke-width="2" />
-        <path d="M5 6 H13 M5 10 H13 M5 14 H10" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
-      </g>
-      <text x="334" y="28" text-anchor="middle" fill="#e2e8f0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">Maintenance journals</text>
+      <rect x="144" y="0" width="112" height="38" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="200" y="24" text-anchor="middle" fill="#334155" font-size="14" font-weight="700">Devices</text>
 
-      <rect x="464" y="0" width="214" height="44" rx="22" fill="#111827" stroke="#475569" />
-      <g transform="translate(486 12)">
-        <circle cx="10" cy="10" r="9" fill="none" stroke="#22c55e" stroke-width="2" />
-        <path d="M10 4 V10 L15 13" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-      </g>
-      <text x="574" y="28" text-anchor="middle" fill="#e2e8f0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">Service history</text>
+      <rect x="268" y="0" width="138" height="38" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="337" y="24" text-anchor="middle" fill="#334155" font-size="14" font-weight="700">Maintenance</text>
+
+      <rect x="418" y="0" width="106" height="38" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="471" y="24" text-anchor="middle" fill="#334155" font-size="14" font-weight="700">Reports</text>
+    </g>
+
+    <!-- content cards -->
+    <g transform="translate(0 118)" filter="url(#cardShadow)">
+      <rect x="0" y="0" width="248" height="104" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="18" y="24" fill="#64748b" font-size="12" font-weight="700">RELAY HEALTH</text>
+      <circle cx="28" cy="50" r="6" fill="#16a34a"/>
+      <text x="42" y="55" fill="#0f172a" font-size="14">Protection reports current</text>
+      <circle cx="28" cy="76" r="6" fill="#2563eb"/>
+      <text x="42" y="81" fill="#0f172a" font-size="14">Settings linked to devices</text>
+
+      <rect x="266" y="0" width="248" height="104" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="284" y="24" fill="#64748b" font-size="12" font-weight="700">ASSET TRACKING</text>
+      <text x="284" y="66" fill="#0f172a" font-size="34" font-weight="700">248</text>
+      <rect x="284" y="78" width="126" height="8" rx="4" fill="#dbeafe"/>
+      <rect x="284" y="78" width="92" height="8" rx="4" fill="#2563eb"/>
+
+      <rect x="532" y="0" width="286" height="104" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="550" y="24" fill="#64748b" font-size="12" font-weight="700">WORKFLOW</text>
+      <rect x="550" y="42" width="72" height="34" rx="8" fill="#eff6ff"/>
+      <text x="586" y="63" text-anchor="middle" fill="#2563eb" font-size="13" font-weight="700">Manuals</text>
+
+      <rect x="632" y="42" width="72" height="34" rx="8" fill="#eff6ff"/>
+      <text x="668" y="63" text-anchor="middle" fill="#2563eb" font-size="13" font-weight="700">Settings</text>
+
+      <rect x="714" y="42" width="86" height="34" rx="8" fill="#dbeafe"/>
+      <text x="757" y="63" text-anchor="middle" fill="#1d4ed8" font-size="13" font-weight="700">Reports</text>
     </g>
   </g>
 
-  <g transform="translate(930 84)">
-    <rect x="0" y="0" width="190" height="160" rx="18" fill="#0f172a" stroke="#64748b" stroke-width="2.5" />
-    <rect x="18" y="18" width="154" height="26" rx="6" fill="#1e293b" />
-    <text x="95" y="36" text-anchor="middle" fill="#cbd5e1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11" font-weight="700">SWITCHGEAR STATUS</text>
-
-    <g transform="translate(24 62)">
-      <rect x="0" y="0" width="44" height="72" rx="8" fill="#111827" stroke="#475569" />
-      <circle cx="22" cy="20" r="8" fill="#22c55e" />
-      <rect x="12" y="38" width="20" height="18" rx="4" fill="#334155" />
-
-      <rect x="54" y="0" width="44" height="72" rx="8" fill="#111827" stroke="#475569" />
-      <circle cx="76" cy="20" r="8" fill="#f59e0b" />
-      <rect x="66" y="38" width="20" height="18" rx="4" fill="#334155" />
-
-      <rect x="108" y="0" width="44" height="72" rx="8" fill="#111827" stroke="#475569" />
-      <circle cx="130" cy="20" r="8" fill="#38bdf8" />
-      <rect x="120" y="38" width="20" height="18" rx="4" fill="#334155" />
-    </g>
-  </g>
-
-  <rect x="270" y="258" width="460" height="6" rx="3" fill="url(#accent)" opacity="0.95" />
+  <!-- accent line -->
+  <rect x="298" y="270" width="380" height="4" rx="2" fill="#2563eb"/>
 </svg>
