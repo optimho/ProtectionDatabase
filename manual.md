@@ -6,28 +6,53 @@ This manual is written for engineers and technicians using the Protection Device
 
 ## Contents
 
-1. [Signing in](#1-signing-in)
-2. [User roles](#2-user-roles)
-3. [The dashboard](#3-the-dashboard)
-4. [KKS codes explained](#4-kks-codes-explained)
-5. [Adding a new relay](#5-adding-a-new-relay)
-6. [Viewing a relay](#6-viewing-a-relay)
-7. [Editing a relay](#7-editing-a-relay)
-8. [Recording a maintenance visit](#8-recording-a-maintenance-visit)
-9. [Viewing past maintenance records](#9-viewing-past-maintenance-records)
-10. [Master settings](#10-master-settings)
-11. [Protection elements and settings](#11-protection-elements-and-settings)
-12. [Protection reports](#12-protection-reports)
-13. [Analytics and reporting](#13-analytics-and-reporting)
-14. [Admin — relay types](#14-admin--relay-types)
-15. [Admin — type templates](#15-admin--type-templates)
-16. [Admin — ANSI device numbers](#16-admin--ansi-device-numbers)
-17. [Admin — user management](#17-admin--user-management)
-18. [Admin — database administration](#18-admin--database-administration)
+1. [Starting the application](#1-starting-the-application)
+2. [Signing in](#2-signing-in)
+3. [User roles](#3-user-roles)
+4. [The dashboard](#4-the-dashboard)
+5. [KKS codes explained](#5-kks-codes-explained)
+6. [Adding a new relay](#6-adding-a-new-relay)
+7. [Viewing a relay](#7-viewing-a-relay)
+8. [Editing a relay](#8-editing-a-relay)
+9. [Recording a maintenance visit](#9-recording-a-maintenance-visit)
+10. [Viewing past maintenance records](#10-viewing-past-maintenance-records)
+11. [Master settings](#11-master-settings)
+12. [Protection elements and settings](#12-protection-elements-and-settings)
+13. [Protection reports](#13-protection-reports)
+14. [Analytics and reporting](#14-analytics-and-reporting)
+15. [Admin — relay types](#15-admin--relay-types)
+16. [Admin — type templates](#16-admin--type-templates)
+17. [Admin — ANSI device numbers](#17-admin--ansi-device-numbers)
+18. [Admin — user management](#18-admin--user-management)
+19. [Admin — database administration](#19-admin--database-administration)
 
 ---
 
-## 1. Signing in
+## 1. Starting the application
+
+### Development (on your local machine)
+
+```bash
+bun run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Production (on the Raspberry Pi)
+
+The application runs as a background service and starts automatically when the Pi boots. You access it through your browser at the network address or Tailscale URL — you do not need to run any commands.
+
+If the service needs to be restarted manually:
+
+```bash
+sudo systemctl restart protection-db
+```
+
+See `deploy.md` for full setup and deployment instructions.
+
+---
+
+## 2. Signing in
 
 Open the application in your browser and enter your email address and password. Click **Sign in**.
 
@@ -48,7 +73,7 @@ To sign out, click your email address at the bottom of the left-hand sidebar, th
 
 ---
 
-## 2. User roles
+## 3. User roles
 
 There are two roles in the system:
 
@@ -61,7 +86,7 @@ Your role is shown next to your name in the sidebar. Contact your administrator 
 
 ---
 
-## 3. The dashboard
+## 4. The dashboard
 
 After signing in you will land on the **Dashboard**. This is the central hub of the application.
 
@@ -89,7 +114,7 @@ Click on a station, unit, or system heading to collapse or expand that section. 
 
 ---
 
-## 4. KKS codes explained
+## 5. KKS codes explained
 
 Every relay in the system is identified by a **KKS code** — an international standard for labelling plant equipment by its location in the station hierarchy. The code is built from eight parts:
 
@@ -112,7 +137,7 @@ When adding a relay, you enter each part separately using the KKS builder. The a
 
 ---
 
-## 5. Adding a new relay
+## 6. Adding a new relay
 
 From the Dashboard, click **Link Relay**. The form has three sections:
 
@@ -143,7 +168,7 @@ Click **Save Device** when done. You will be taken to the relay's detail page.
 
 ---
 
-## 6. Viewing a relay
+## 7. Viewing a relay
 
 Click any relay in the dashboard tree to open its detail page. The page is divided into two columns.
 
@@ -163,7 +188,7 @@ Click any relay in the dashboard tree to open its detail page. The page is divid
 
 ---
 
-## 7. Editing a relay
+## 8. Editing a relay
 
 From the relay detail page, click the **Edit** button in the top right. All fields from the original form are editable including the KKS code, device details, and device-specific fields.
 
@@ -171,7 +196,7 @@ Click **Save Changes** to apply. The KKS code uniqueness check runs on save — 
 
 ---
 
-## 8. Recording a maintenance visit
+## 9. Recording a maintenance visit
 
 From the relay detail page, click **New Maintenance** (either the button in the top right or the link in the left column).
 
@@ -207,7 +232,7 @@ After saving you can attach test result files to the record — see [Viewing pas
 
 ---
 
-## 9. Viewing past maintenance records
+## 10. Viewing past maintenance records
 
 From the relay detail page, click **View** next to any record in the Maintenance History list.
 
@@ -233,7 +258,7 @@ Add an optional description, choose the file, and click **Upload**. Files can be
 
 ---
 
-## 10. Master settings
+## 11. Master settings
 
 Master settings are the versioned configuration files for a relay — the official record of what the relay should be set to. Every time settings are revised, a new version is uploaded and all previous versions are kept.
 
@@ -258,7 +283,7 @@ Click the **Download** link next to any revision to download that file. The most
 
 ---
 
-## 11. Protection elements and settings
+## 12. Protection elements and settings
 
 From the relay detail page, click **Protection Elements** to manage the protection functions configured on this relay.
 
@@ -301,7 +326,7 @@ Click **Delete** on any element. You will be asked to confirm before it is remov
 
 ---
 
-## 12. Protection reports
+## 13. Protection reports
 
 Protection reports are standalone documents — system protection philosophy documents, coordination studies, or protection reports — that can be uploaded to the library and optionally linked to one or more relays.
 
@@ -338,7 +363,7 @@ Click **Delete** next to the report. The report document is permanently removed.
 
 ---
 
-## 13. Analytics and reporting
+## 14. Analytics and reporting
 
 The Analytics page lets you run reports across the entire device fleet. Click **Analytics** in the sidebar.
 
@@ -387,7 +412,7 @@ Click **Delete** on any report card. This removes the saved report definition �
 
 ---
 
-## 14. Admin — relay types
+## 15. Admin — relay types
 
 The relay type catalogue defines the models available when registering a relay. Click **Relay Types** in the sidebar (admin only).
 
@@ -417,7 +442,7 @@ Click **Delete** on a relay type. This will fail if there are relays registered 
 
 ---
 
-## 15. Admin — type templates
+## 16. Admin — type templates
 
 Type templates define extra fields that appear on maintenance forms and device detail pages for a specific relay type. This lets you capture relay-specific data — for example, the measured pickup current for an overcurrent relay, or the CT ratio for a differential relay.
 
@@ -454,7 +479,7 @@ Click **Edit** on any template. Changes to the field schema take effect immediat
 
 ---
 
-## 16. Admin — ANSI device numbers
+## 17. Admin — ANSI device numbers
 
 The ANSI device number library is the reference list of standard protection element codes (e.g. `21` — Distance Relay, `51` — Time Overcurrent, `87L` — Line Differential). This library is used when assigning protection elements to relays.
 
@@ -464,7 +489,7 @@ Admins can add, edit, and delete entries. The library comes pre-seeded with the 
 
 ---
 
-## 17. Admin — user management
+## 18. Admin — user management
 
 Click **User Admin** in the sidebar (admin only).
 
@@ -488,7 +513,7 @@ Click **Delete** next to the user and confirm. This cannot be undone.
 
 ---
 
-## 18. Admin — database administration
+## 19. Admin — database administration
 
 Click **Database Admin** in the sidebar (admin only).
 

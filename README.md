@@ -43,12 +43,12 @@ bun run init-db
 bun run seed-admin
 
 # Start the dev server
-bun --bun run dev
+bun run dev
 ```
 
-> **Important:** Always start with `bun --bun run dev` (not `bun run dev`). The `--bun` flag ensures better-sqlite3's native bindings are resolved correctly under Bun's runtime.
+> **Note on `--bun` flag:** Use `bun run dev` for development (Node.js mode — required for `better-sqlite3`). Only the production `build` and `start` commands need `bun --bun`.
 
-Open [http://localhost:3000](http://localhost:3000) and sign in with the admin credentials you set in `seed-admin`.
+Open [http://localhost:3000](http://localhost:3000) and sign in with the default admin credentials (`admin@admin.com` / `Admin1234!`) — change these after first login.
 
 ### Environment variables
 
