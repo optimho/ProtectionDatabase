@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">ProtectionDatabase banner</title>
+  <desc id="desc">Banner for the ProtectionDatabase repository.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22c55e" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="320" rx="24" fill="url(#bg)" />
+  <circle cx="1030" cy="70" r="130" fill="#38bdf8" opacity="0.08" />
+  <circle cx="1110" cy="250" r="150" fill="#22c55e" opacity="0.08" />
+
+  <g transform="translate(72 72)">
+    <rect x="0" y="0" width="120" height="120" rx="24" fill="#0b1220" stroke="url(#accent)" stroke-width="4" />
+    <path d="M60 22 L92 40 V80 C92 98 79 113 60 120 C41 113 28 98 28 80 V40 Z" fill="#22c55e" opacity="0.18" />
+    <path d="M60 28 L86 43 V78 C86 93 75 106 60 112 C45 106 34 93 34 78 V43 Z" fill="none" stroke="#86efac" stroke-width="4" stroke-linejoin="round" />
+    <path d="M60 50 V86" stroke="#86efac" stroke-width="6" stroke-linecap="round" />
+    <circle cx="60" cy="97" r="6" fill="#86efac" />
+    <path d="M48 62 H72" stroke="#86efac" stroke-width="6" stroke-linecap="round" />
+  </g>
+
+  <g transform="translate(230 92)">
+    <text x="0" y="0" fill="#e2e8f0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="52" font-weight="700">
+      ProtectionDatabase
+    </text>
+    <text x="0" y="52" fill="#94a3b8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="500">
+      Maintenance, reports, manuals, settings, and device history in one place.
+    </text>
+
+    <g transform="translate(0 96)">
+      <rect x="0" y="0" width="210" height="42" rx="21" fill="#111827" stroke="#334155" />
+      <circle cx="26" cy="21" r="6" fill="#22c55e" />
+      <text x="42" y="27" fill="#cbd5e1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="600">Device records</text>
+
+      <rect x="226" y="0" width="210" height="42" rx="21" fill="#111827" stroke="#334155" />
+      <circle cx="252" cy="21" r="6" fill="#38bdf8" />
+      <text x="268" y="27" fill="#cbd5e1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="600">Maintenance logs</text>
+
+      <rect x="452" y="0" width="190" height="42" rx="21" fill="#111827" stroke="#334155" />
+      <circle cx="478" cy="21" r="6" fill="#f59e0b" />
+      <text x="494" y="27" fill="#cbd5e1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="600">Reports</text>
+    </g>
+  </g>
+</svg>
