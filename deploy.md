@@ -141,7 +141,14 @@ bun run migrate
 bun run seed-admin
 ```
 
-The script will prompt you for a name, email address, and password. These credentials are not stored anywhere except in the database — choose a strong password and record it securely. Additional users can be created from the app once it is running.
+This creates a default admin account:
+
+| | |
+|---|---|
+| **Email** | `admin@local` |
+| **Password** | `Admin1234!` |
+
+> **Change the password immediately after first login** via User Admin → Reset PW. Additional users can be created from the app once it is running.
 
 ---
 

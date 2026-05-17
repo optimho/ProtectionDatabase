@@ -31,7 +31,18 @@ This manual is written for engineers and technicians using the Protection Device
 
 Open the application in your browser and enter your email address and password. Click **Sign in**.
 
-If you do not have an account, ask your administrator to create one for you. Self-registration is available at `/register` but your administrator may have it restricted.
+### Default administrator credentials
+
+When the system is first set up, a default admin account is created:
+
+| | |
+|---|---|
+| **Email** | `admin@local` |
+| **Password** | `Admin1234!` |
+
+> **Change these immediately after first login.** Go to **User Admin**, click **Reset PW** next to the Administrator account, and set a strong password. You should also update the email address to a real one.
+
+If you do not have an account, ask your administrator to create one for you.
 
 To sign out, click your email address at the bottom of the left-hand sidebar, then click **Sign out**.
 
