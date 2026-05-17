@@ -37,7 +37,7 @@ async function main() {
 
   const id        = `admin-${Date.now()}`;
   const accountId = `account-${Date.now()}`;
-  const email     = "admin@local";
+  const email     = "admin@admin.com";
   const name      = "Administrator";
   const password  = "Admin1234!";
 

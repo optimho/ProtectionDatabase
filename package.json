@@ -12,8 +12,9 @@
     "migrate": "npx tsx scripts/migrate-add-parts.ts && npx tsx scripts/migrate-part-enhancements.ts && npx tsx scripts/migrate-ansi-elements.ts && npx tsx scripts/migrate-add-maintenance-period.ts && npx tsx scripts/migrate-add-data-reports.ts"
   },
   "notes": {
-    "dev": "Run dev with: bun run dev  (better-sqlite3 works in Node.js mode)",
-    "start": "Run prod with: bun run start",
+    "dev": "Run dev with: bun run dev  (NOT bun --bun — better-sqlite3 requires Node.js mode)",
+    "build": "Build with: bun --bun run build",
+    "start": "Run prod with: bun --bun run start",
     "init-db": "Run once with: bun run init-db"
   },
   "dependencies": {

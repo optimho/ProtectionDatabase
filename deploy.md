@@ -145,7 +145,7 @@ This creates a default admin account:
 
 | | |
 |---|---|
-| **Email** | `admin@local` |
+| **Email** | `admin@admin.com` |
 | **Password** | `Admin1234!` |
 
 > **Change the password immediately after first login** via User Admin → Reset PW. Additional users can be created from the app once it is running.

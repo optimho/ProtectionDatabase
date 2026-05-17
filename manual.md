@@ -37,7 +37,7 @@ When the system is first set up, a default admin account is created:
 
 | | |
 |---|---|
-| **Email** | `admin@local` |
+| **Email** | `admin@admin.com` |
 | **Password** | `Admin1234!` |
 
 > **Change these immediately after first login.** Go to **User Admin**, click **Reset PW** next to the Administrator account, and set a strong password. You should also update the email address to a real one.
