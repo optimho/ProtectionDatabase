@@ -48,6 +48,19 @@ export default function ElementsPage() {
   const [newDescription, setNewDescription] = useState("");
   const [addingElement, setAddingElement] = useState(false);
 
+  // Elements document
+  const [docName, setDocName] = useState<string | null>(null);
+  const [docUploading, setDocUploading] = useState(false);
+  const [docDeleting, setDocDeleting] = useState(false);
+
+  const fetchDoc = useCallback(async () => {
+    const r = await fetch(`/api/devices/${id}`);
+    if (r.ok) {
+      const d = await r.json();
+      setDocName(d.elements_doc_original_name ?? null);
+    }
+  }, [id]);
+
   // Inline element edit
   const [editingElement, setEditingElement] = useState<string | null>(null);
   const [editEl, setEditEl] = useState({ custom_name: "", description: "" });
@@ -77,7 +90,30 @@ export default function ElementsPage() {
   useEffect(() => {
     fetch("/api/ansi-device-numbers").then((r) => r.json()).then(setAnsiCodes);
     fetchElements();
-  }, [fetchElements]);
+    fetchDoc();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  async function handleDocUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setDocUploading(true);
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("originalName", file.name);
+    await fetch(`/api/devices/${id}/elements-document`, { method: "POST", body: fd });
+    setDocUploading(false);
+    e.target.value = "";
+    fetchDoc();
+  }
+
+  async function handleDocDelete() {
+    if (!confirm("Remove the elements document?")) return;
+    setDocDeleting(true);
+    await fetch(`/api/devices/${id}/elements-document`, { method: "DELETE" });
+    setDocDeleting(false);
+    setDocName(null);
+  }
 
   function displayName(el: ProtectionElement) {
     if (el.custom_name) return el.custom_name;
@@ -178,6 +214,45 @@ export default function ElementsPage() {
       <div className="flex items-center gap-3 mb-6">
         <Link href={`/devices/${id}`} className="text-sm text-slate-500 hover:text-slate-700">← Device</Link>
         <h1 className="text-xl font-semibold text-slate-900">Protection Elements</h1>
+      </div>
+
+      {/* Elements Document */}
+      <div className="bg-white rounded-lg border border-slate-200 p-4 mb-6 flex items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-slate-700">Elements Document</p>
+          {docName ? (
+            <p className="text-xs text-slate-500 mt-0.5">
+              <span className="font-mono">{docName}</span>
+            </p>
+          ) : (
+            <p className="text-xs text-slate-400 mt-0.5">No document uploaded yet.</p>
+          )}
+        </div>
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {docName && (
+            <>
+              <a
+                href={`/api/devices/${id}/elements-document`}
+                target="_blank"
+                rel="noreferrer"
+                className="px-3 py-1.5 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700"
+              >
+                Open
+              </a>
+              <button
+                onClick={handleDocDelete}
+                disabled={docDeleting}
+                className="text-xs text-red-500 hover:underline disabled:opacity-50"
+              >
+                {docDeleting ? "Removing…" : "Remove"}
+              </button>
+            </>
+          )}
+          <label className={`px-3 py-1.5 border border-slate-300 text-slate-700 text-xs rounded-md hover:bg-slate-50 cursor-pointer ${docUploading ? "opacity-50 pointer-events-none" : ""}`}>
+            {docUploading ? "Uploading…" : docName ? "Replace" : "Upload Document"}
+            <input type="file" className="sr-only" onChange={handleDocUpload} disabled={docUploading} />
+          </label>
+        </div>
       </div>
 
       {/* Add Element */}

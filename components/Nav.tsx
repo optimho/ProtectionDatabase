@@ -20,7 +20,7 @@ import { signOut, useSession } from "@/lib/auth-client";
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/analytics", label: "Analytics" },
-  { href: "/reports", label: "Reports" },
+  { href: "/reports", label: "Protection Reports" },
   { href: "/ansi-device-numbers", label: "ANSI Codes" },
 ];
 

@@ -6,7 +6,7 @@ A web application for managing protection relays in electrical power systems. Th
 
 Multi-user with email/password authentication and role-based access control (user / admin).
 
-Deployed on a Raspberry Pi and exposed over Tailscale Funnel.
+Deployed on a Raspberry Pi and exposed over Tailscale Funnel. Also runs on Windows for local development.
 
 ---
 
@@ -14,16 +14,21 @@ Deployed on a Raspberry Pi and exposed over Tailscale Funnel.
 
 | Layer | Choice |
 |---|---|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js (App Router) |
 | Runtime | Bun |
 | Language | TypeScript |
 | Styling | TailwindCSS v4 + @tailwindcss/postcss |
 | Database | SQLite via bun:sqlite (no ORM, raw SQL) |
 | Auth | better-auth (email/password, session cookies) |
 | File storage | Compressed gzip files in `public/uploads/` |
-| Deployment | Raspberry Pi + Tailscale Funnel |
+| File I/O | Bun-native APIs (`Bun.file()`, `Bun.write()`, `Bun.gzipSync()`, `Bun.gunzipSync()`) |
+| Deployment | Raspberry Pi + Tailscale Funnel; also Windows for local development |
 
 > **Note:** The server must be started with `bun --bun run dev/start`. Without `--bun`, `bun:sqlite` is not available server-side.
+
+> **Windows note:** `node:fs` is still used for directory operations (`mkdirSync`, `readdirSync`, `statSync`, `unlink`) as Bun has no native mkdir/directory-walk API. All other file I/O uses Bun-native APIs.
+
+> **Body size limit:** `next.config.ts` sets `experimental.proxyClientMaxBodySize: 100 * 1024 * 1024` (100 MB) to allow large file uploads through the Next.js proxy layer.
 
 ---
 
@@ -172,6 +177,9 @@ CREATE TABLE IF NOT EXISTS devices (
   eipc                     INTEGER NOT NULL DEFAULT 0,  -- 1 = EIPC compliance required
   maintenance_period_years REAL    NOT NULL DEFAULT 0,  -- retest interval (0 = not set)
   device_fields_json       TEXT NOT NULL DEFAULT '{}',  -- type-specific field values
+  -- optional document explaining protection elements (added via migration)
+  elements_doc_filename    TEXT,   -- compressed file in public/uploads/elements/<device_id>/
+  elements_doc_original_name TEXT,
   created_by               TEXT NOT NULL REFERENCES user(id),
   created_at               TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at               TEXT NOT NULL DEFAULT (datetime('now'))
@@ -285,6 +293,8 @@ CREATE TABLE IF NOT EXISTS maintenance (
   vt_secondary_insulation_check   INTEGER NOT NULL DEFAULT 0,
   ct_loop_check                   INTEGER NOT NULL DEFAULT 0,
   vt_loop_check                   INTEGER NOT NULL DEFAULT 0,
+  relay_tested_analogues          INTEGER NOT NULL DEFAULT 0,  -- added via migration
+  relay_tested_comprehensive      INTEGER NOT NULL DEFAULT 0,  -- added via migration
   notes                           TEXT NOT NULL DEFAULT '',
   form_data_json                  TEXT NOT NULL DEFAULT '{}',   -- device-specific field values
   log_id                          TEXT REFERENCES log(id),      -- auto-created log entry
@@ -335,14 +345,16 @@ public/
     settings/<device_id>/             ← master settings files (all revisions kept)
     test_results/<maintenance_id>/    ← test results attached to maintenance records
     manuals/                          ← part data sheets and manuals
+    elements/<device_id>/             ← protection elements reference document (one per device)
 ```
 
 **Upload pipeline:**
 1. File received as `multipart/form-data`
-2. Buffer compressed with `gzipSync()`
-3. Saved as `<nanoid8>_<original_name>.gz` (original name sanitised with `path.basename`)
-4. Filename + original name stored in database
-5. On download: read `.gz`, decompress, serve with guessed MIME type
+2. The frontend always appends the original filename as a separate `originalName` text field in the form data (in addition to the `file` blob field). This is required because Bun's `req.formData()` returns `Blob` objects (no `.name` property) rather than `File` objects in some Next.js route contexts.
+3. Buffer compressed with `Bun.gzipSync()`
+4. Saved as `<nanoid8>_<original_name>.gz` (original name sanitised with `path.basename`)
+5. Filename + original name stored in database
+6. On download: read `.gz` with `Bun.file().bytes()`, decompress with `Bun.gunzipSync()`, serve with guessed MIME type
 
 Path traversal attacks are prevented by running every stored filename through `path.basename()` before constructing disk paths.
 
@@ -420,6 +432,13 @@ All endpoints require a valid session cookie. Unauthenticated requests return 40
 | POST | `/api/devices/[id]/maintenance/[mid]/files` | Attach file |
 | GET | `/api/devices/[id]/maintenance/[mid]/files/[fid]/download` | Download file |
 | DELETE | `/api/devices/[id]/maintenance/[mid]/files/[fid]` | Delete file |
+
+### Elements Document
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/devices/[id]/elements-document` | Open/download the protection elements reference document (served inline so it opens in the browser) |
+| POST | `/api/devices/[id]/elements-document` | Upload (or replace) the elements reference document |
+| DELETE | `/api/devices/[id]/elements-document` | Delete the elements reference document |
 
 ### Protection Elements
 | Method | Path | Description |
@@ -506,13 +525,13 @@ All endpoints require a valid session cookie. Unauthenticated requests return 40
 | `/register` | Public | User self-registration |
 | `/dashboard` | All users | Device tree: Station → Unit → System → Devices, collapsible, with search |
 | `/devices/new` | All users | Add relay — KKS builder + device-type fields |
-| `/devices/[id]` | All users | Relay detail: info panel, form template fields, report link, settings, maintenance history, log |
+| `/devices/[id]` | All users | Relay detail: info panel, form template fields, linked protection report (with link/change/remove button), settings, maintenance history, log |
 | `/devices/[id]/edit` | All users | Edit relay metadata and device-specific fields |
 | `/devices/[id]/settings` | All users | Settings revision history — upload, list, download |
-| `/devices/[id]/elements` | All users | Protection elements — add, enable/disable, edit applied settings |
+| `/devices/[id]/elements` | All users | Protection elements — add, enable/disable, edit applied settings; upload/open/delete a reference document explaining the elements |
 | `/devices/[id]/maintenance/new` | All users | New maintenance record with dynamic form from template |
 | `/devices/[id]/maintenance/[mid]` | All users | View / edit past maintenance record and attached files |
-| `/reports` | All users | Standalone protection report library |
+| `/reports` | All users | Standalone protection report library (navigation label: "Protection Reports") |
 | `/analytics` | All users | Run saved reports; admin can create / delete reports |
 | `/ansi-device-numbers` | All users | Browse ANSI element library; admin can edit |
 | `/parts` | Admin only | Relay type catalog |
@@ -530,14 +549,15 @@ All endpoints require a valid session cookie. Unauthenticated requests return 40
 
 | Component | Purpose |
 |---|---|
-| `Nav.tsx` | Left sidebar navigation; shows role-conditional admin links; user email and sign-out |
+| `Nav.tsx` | Left sidebar navigation; shows role-conditional admin links; user email and sign-out. The protection reports link is labelled "Protection Reports". |
 | `DeviceTree.tsx` | Hierarchical device tree (Station → Unit → System → Device cards), collapsible, searchable |
 | `KKSBuilder.tsx` | 8-field structured input that assembles and previews the `kks_full` string in real time |
 | `DynamicFormFields.tsx` | Renders a `FieldSchema[]` as form fields (text, number, select, checkbox, textarea, date) |
 | `FormTemplateEditor.tsx` | Admin field-schema builder: add/remove/reorder fields, set type/required/options |
-| `FileUploader.tsx` | Generic upload + list + download + delete component used for reports, settings, and test results |
+| `FileUploader.tsx` | Generic upload + list + download + delete component used for reports, settings, and test results. Sends filename as explicit `originalName` form field alongside the file blob. |
 | `FileInput.tsx` | Single-file input with label; used within forms |
 | `LogPanel.tsx` | Device activity log: displays entries, allows manual addition of general/maintenance/settings_change entries |
+| `LinkReportButton.tsx` | Client component on the device detail page. Fetches the protection report list, lets the user link or change the report associated with a device (PUT `/api/devices/[id]`), and provides a "Remove link" option. |
 
 ---
 
@@ -605,3 +625,20 @@ Accessible at `/admin/database` (admin only):
 - **Restore** — Accepts the backup zip, validates it contains `app.db` with correct SQLite magic bytes, then closes the live connection, overwrites `data/app.db`, and extracts all `uploads/*` entries back to `public/uploads/`. The database connection is re-established automatically on the next request.
 - **Format:** Backup and restore use `fflate` (pure JavaScript zip library — no native compilation required, works on ARM64).
 - **Clear** — Disables foreign key enforcement, deletes all application data tables, re-enables FK enforcement. User/session/account/verification tables are intentionally preserved so admins can continue to log in after a clear.
+
+---
+
+## 15. Database Migrations
+
+Schema changes after the initial `init-db` are applied as idempotent migration scripts in `scripts/`. Each script checks whether the target column already exists before running `ALTER TABLE`, so re-running is safe. Run with:
+
+```bash
+bun --bun scripts/<migration-name>.ts
+```
+
+| Script | Change |
+|---|---|
+| `migrate-add-relay-tested-checks.ts` | Adds `relay_tested_analogues` and `relay_tested_comprehensive` columns to the `maintenance` table |
+| `migrate-add-elements-doc.ts` | Adds `elements_doc_filename` and `elements_doc_original_name` columns to the `devices` table |
+
+> **Note:** Backup the database (`/admin/database → Backup`) before running any migration in production.

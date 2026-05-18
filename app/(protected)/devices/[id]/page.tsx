@@ -7,6 +7,7 @@ import { getReport } from "@/lib/reports";
 import { getPartByNumber, listManuals } from "@/lib/parts";
 import { getFormTemplateByPartNumber, type FieldSchema } from "@/lib/form-templates";
 import LogPanel from "@/components/LogPanel";
+import LinkReportButton from "@/components/LinkReportButton";
 
 export const dynamic = "force-dynamic";
 
@@ -148,6 +149,7 @@ export default async function DeviceDetailPage({
             ) : (
               <p className="text-sm text-slate-400">No report linked.</p>
             )}
+            <LinkReportButton deviceId={id} currentReportId={device.report_id} />
           </Card>
 
           {/* Relay type manuals */}

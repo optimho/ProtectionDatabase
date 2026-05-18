@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession, unauthorized, forbidden, notFound } from "@/lib/session";
 import { getManual, deleteManual } from "@/lib/parts";
-import { readFile, unlink } from "fs/promises";
+import { unlink } from "node:fs/promises";
 import path from "path";
 import { guessMime } from "@/lib/files";
 
@@ -16,15 +16,12 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   if (!manual) return notFound();
 
   const filePath = path.join(process.cwd(), "public", "uploads", "manuals", path.basename(manual.filename));
-  let buffer: Buffer;
-  try {
-    buffer = await readFile(filePath);
-  } catch {
-    return notFound();
-  }
+  const bunFile = Bun.file(filePath);
+  if (!(await bunFile.exists())) return notFound();
+  const buffer = await bunFile.arrayBuffer();
 
   const mime = guessMime(manual.original_name);
-  return new NextResponse(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer, {
+  return new NextResponse(buffer, {
     headers: {
       "Content-Type": mime,
       "Content-Disposition": `attachment; filename="${encodeURIComponent(manual.original_name)}"`,
@@ -43,6 +40,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
 
   const filePath = path.join(process.cwd(), "public", "uploads", "manuals", path.basename(manual.filename));
   await unlink(filePath).catch(() => {});
+
   await deleteManual(mid);
 
   return new NextResponse(null, { status: 204 });

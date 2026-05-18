@@ -44,8 +44,9 @@ export async function POST(
   if (!date?.trim()) return badRequest("date is required");
   if (!description?.trim()) return badRequest("description is required");
 
+  const originalName = (formData.get("originalName") as string | null) ?? (file as File).name;
   const buffer = await file.arrayBuffer();
-  const filename = await saveCompressed(buffer, file.name, `settings/${id}`);
+  const filename = await saveCompressed(buffer, originalName, `settings/${id}`);
 
   const setting = await createSetting({
     device_id: id,

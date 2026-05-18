@@ -35,6 +35,7 @@ export default function SettingsPage() {
     setUploading(true);
     const fd = new FormData();
     fd.append("file", file);
+    fd.append("originalName", file.name);
     fd.append("revision", revision);
     fd.append("date", date);
     fd.append("description", description);

@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession, unauthorized, forbidden, notFound, badRequest } from "@/lib/session";
 import { getPart, listManuals, createManual } from "@/lib/parts";
-import { writeFile } from "fs/promises";
-import { mkdirSync } from "fs";
+import { mkdirSync } from "node:fs";
 import path from "path";
 import { nanoid } from "nanoid";
 
@@ -39,7 +38,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const dir = path.join(process.cwd(), "public", "uploads", "manuals");
   mkdirSync(dir, { recursive: true });
-  await writeFile(path.join(dir, filename), Buffer.from(await file.arrayBuffer()));
+  await Bun.write(path.join(dir, filename), await file.arrayBuffer());
 
   void ext; // used via safeName which preserves extension
   const manual = await createManual({

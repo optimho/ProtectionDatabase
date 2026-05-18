@@ -50,14 +50,15 @@ export async function POST(
     return badRequest(`file_type must be one of: ${VALID_TYPES.join(", ")}`);
   }
 
+  const originalName = (formData.get("originalName") as string | null) ?? (file as File).name;
   const buffer = await file.arrayBuffer();
-  const filename = await saveCompressed(buffer, file.name, `test_results/${mid}`);
+  const filename = await saveCompressed(buffer, originalName, `test_results/${mid}`);
 
   const mf = await addMaintenanceFile({
     maintenance_id: mid,
     file_type: file_type as typeof VALID_TYPES[number],
     filename,
-    original_name: file.name,
+    original_name: originalName,
     description,
   });
 

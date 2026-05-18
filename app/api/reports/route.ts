@@ -32,8 +32,9 @@ export async function POST(req: Request) {
   if (!revision?.trim()) return badRequest("revision is required");
   if (!date?.trim()) return badRequest("date is required");
 
+  const originalName = (formData.get("originalName") as string | null) ?? (file as File).name;
   const buffer = await file.arrayBuffer();
-  const filename = await saveCompressed(buffer, file.name, "reports");
+  const filename = await saveCompressed(buffer, originalName, "reports");
 
   const report = await createReport({
     title,

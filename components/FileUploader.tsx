@@ -41,6 +41,7 @@ export default function FileUploader({
     setUploading(true);
     const fd = new FormData();
     fd.append("file", file);
+    fd.append("originalName", file.name);
     fd.append("description", desc);
     if (showFileType) fd.append("file_type", fileType);
     await fetch(uploadUrl, { method: "POST", body: fd });

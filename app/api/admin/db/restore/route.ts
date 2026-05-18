@@ -15,7 +15,7 @@
  */
 
 import { NextResponse } from "next/server";
-import { writeFileSync, mkdirSync } from "fs";
+import { mkdirSync } from "node:fs";
 import { join, dirname } from "path";
 import { unzipSync } from "fflate";
 import { getSession, unauthorized, forbidden, badRequest } from "@/lib/session";
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 
   // Close the live connection so we can overwrite the database file
   closeDb();
-  writeFileSync("data/app.db", dbBytes);
+  await Bun.write("data/app.db", dbBytes);
 
   // Restore uploaded files from the zip (uploads/* entries)
   const uploadsRoot = join(process.cwd(), "public");
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
     const dest = join(uploadsRoot, entryPath);
     // Create parent directories as needed
     mkdirSync(dirname(dest), { recursive: true });
-    writeFileSync(dest, bytes);
+    await Bun.write(dest, bytes);
   }
 
   return NextResponse.json({ ok: true, message: "Backup restored successfully" });

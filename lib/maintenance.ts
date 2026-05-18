@@ -12,6 +12,8 @@ export interface MaintenanceRecord {
   vt_secondary_insulation_check: number;
   ct_loop_check: number;
   vt_loop_check: number;
+  relay_tested_analogues: number;
+  relay_tested_comprehensive: number;
   notes: string;
   form_data_json: string;
   log_id: string | null;
@@ -50,13 +52,15 @@ export async function createMaintenance(
       settings_checked_to_master, onload_check, trip_function_proved,
       ct_secondary_insulation_check, vt_secondary_insulation_check,
       ct_loop_check, vt_loop_check,
+      relay_tested_analogues, relay_tested_comprehensive,
       notes, form_data_json, log_id, created_by
-    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     [
       id, input.device_id, input.date,
       input.settings_checked_to_master, input.onload_check, input.trip_function_proved,
       input.ct_secondary_insulation_check, input.vt_secondary_insulation_check,
       input.ct_loop_check, input.vt_loop_check,
+      input.relay_tested_analogues ?? 0, input.relay_tested_comprehensive ?? 0,
       input.notes, input.form_data_json, input.log_id ?? null,
       input.created_by,
     ]

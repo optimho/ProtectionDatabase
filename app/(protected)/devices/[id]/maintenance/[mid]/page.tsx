@@ -13,6 +13,8 @@ const CHECKBOXES = [
   { key: "vt_secondary_insulation_check", label: "VT secondary insulation check" },
   { key: "ct_loop_check", label: "CT loop check" },
   { key: "vt_loop_check", label: "VT loop check" },
+  { key: "relay_tested_analogues", label: "Relay tested — Analogues, Inputs and Outputs" },
+  { key: "relay_tested_comprehensive", label: "Relay tested — Comprehensive all elements" },
 ];
 
 const FILE_TYPES = [

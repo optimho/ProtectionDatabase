@@ -29,6 +29,8 @@ export interface Device extends KKSParts {
   circuit: string;
   kks_full: string;                   // assembled from the 8 KKS parts
   report_id: string | null;           // optional link to a protection report
+  elements_doc_filename: string | null;      // uploaded protection elements document
+  elements_doc_original_name: string | null;
   eipc: number;                       // 1 = EIPC compliance testing required
   maintenance_period_years: number;   // retest interval; 0 means no period set
   device_fields_json: string;         // JSON object: values for form_template fields

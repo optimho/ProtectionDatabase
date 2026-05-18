@@ -9,7 +9,7 @@
  */
 
 import { NextResponse } from "next/server";
-import { readFileSync, readdirSync, statSync, existsSync } from "fs";
+import { readdirSync, statSync, existsSync } from "node:fs";
 import { join, relative } from "path";
 import { zipSync, type Zippable } from "fflate";
 import { getSession, unauthorized, forbidden } from "@/lib/session";
@@ -26,7 +26,7 @@ function isAdmin(session: Awaited<ReturnType<typeof getSession>>) {
  * Recursively walk a directory and return every file as a flat map of
  * relative path → Uint8Array, suitable for passing to fflate's zipSync.
  */
-function collectFiles(dir: string, root: string): Zippable {
+async function collectFiles(dir: string, root: string): Promise<Zippable> {
   const result: Zippable = {};
   if (!existsSync(dir)) return result;
 
@@ -34,9 +34,9 @@ function collectFiles(dir: string, root: string): Zippable {
     const full = join(dir, entry);
     const rel = relative(root, full).replace(/\\/g, "/"); // normalise on Windows
     if (statSync(full).isDirectory()) {
-      Object.assign(result, collectFiles(full, root));
+      Object.assign(result, await collectFiles(full, root));
     } else {
-      result[rel] = new Uint8Array(readFileSync(full));
+      result[rel] = await Bun.file(full).bytes();
     }
   }
   return result;
@@ -55,9 +55,9 @@ export async function GET() {
   // Build the zip file contents
   const zipContents: Zippable = {
     // Database at the root of the zip
-    "app.db": new Uint8Array(readFileSync("data/app.db")),
+    "app.db": await Bun.file("data/app.db").bytes(),
     // All uploaded files, preserving folder structure under uploads/
-    ...collectFiles(uploadsDir, join(process.cwd(), "public")),
+    ...await collectFiles(uploadsDir, join(process.cwd(), "public")),
   };
 
   const zipped = zipSync(zipContents);

@@ -38,6 +38,7 @@ export default function ReportsPage() {
     setError(""); setUploading(true);
     const fd = new FormData();
     fd.append("file", file);
+    fd.append("originalName", file.name);
     fd.append("title", title);
     fd.append("report_number", reportNumber);
     fd.append("description", description);

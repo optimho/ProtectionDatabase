@@ -83,7 +83,7 @@ export default function DatabaseAdminPage() {
         <ul className="list-disc list-inside space-y-1 text-blue-800">
           <li><span className="font-medium">Download Backup</span> — creates a single <code className="bg-blue-100 px-1 rounded">.zip</code> file containing the database and all uploaded files (reports, master settings, test results, manuals). This is your complete recovery point.</li>
           <li><span className="font-medium">Restore from Backup</span> — upload a <code className="bg-blue-100 px-1 rounded">.zip</code> created by Download Backup. Both the database and all uploaded files are restored. All current data is overwritten.</li>
-          <li><span className="font-medium">Recommended schedule</span> — take a backup before any major changes and store the zip on a network drive or USB stick off the Raspberry Pi.</li>
+          <li><span className="font-medium">Recommended schedule</span> — take a backup before any major changes and store the zip on a network drive or USB stick.</li>
         </ul>
       </section>
 

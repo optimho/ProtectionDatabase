@@ -23,9 +23,8 @@
  */
 
 import path from "path";
-import { mkdirSync } from "fs";
-import { readFile, writeFile, unlink } from "fs/promises";
-import { gzipSync, gunzipSync } from "zlib";
+import { mkdirSync } from "node:fs";
+import { unlink } from "node:fs/promises";
 import { nanoid } from "nanoid";
 
 /**
@@ -34,16 +33,16 @@ import { nanoid } from "nanoid";
  */
 export async function saveCompressed(
   buffer: ArrayBuffer,
-  originalName: string,
+  originalName: string | undefined | null,
   folder: string
 ): Promise<string> {
-  const safeName = path.basename(originalName).replace(/[^a-zA-Z0-9._-]/g, "_");
+  const safeName = path.basename(originalName ?? "upload").replace(/[^a-zA-Z0-9._-]/g, "_");
   const filename = `${nanoid(8)}_${safeName}.gz`;
   const dir = path.join(process.cwd(), "public", "uploads", folder);
   mkdirSync(dir, { recursive: true });
 
-  const compressed = gzipSync(Buffer.from(buffer));
-  await writeFile(path.join(dir, filename), compressed);
+  const compressed = Bun.gzipSync(new Uint8Array(buffer));
+  await Bun.write(path.join(dir, filename), compressed);
   return filename;
 }
 
@@ -53,8 +52,8 @@ export async function saveCompressed(
 export async function readDecompressed(folder: string, filename: string): Promise<ArrayBuffer> {
   const safeFilename = path.basename(filename);
   const filePath = path.join(process.cwd(), "public", "uploads", folder, safeFilename);
-  const compressed = await readFile(filePath);
-  const decompressed = gunzipSync(compressed);
+  const compressed = await Bun.file(filePath).bytes();
+  const decompressed = Bun.gunzipSync(compressed);
   return decompressed.buffer.slice(decompressed.byteOffset, decompressed.byteOffset + decompressed.byteLength) as ArrayBuffer;
 }
 
