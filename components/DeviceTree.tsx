@@ -5,17 +5,21 @@ import Link from "next/link";
 import type { Device, DeviceTree } from "@/lib/devices";
 
 function DeviceRow({ device }: { device: Device }) {
+  const decommissioned = !!device.decommissioned_at;
   return (
     <Link
       href={`/devices/${device.id}`}
-      className="flex items-center justify-between px-4 py-2 hover:bg-blue-50 rounded-md group"
+      className={`flex items-center justify-between px-4 py-2 rounded-md group ${decommissioned ? "opacity-50 hover:opacity-75" : "hover:bg-blue-50"}`}
     >
       <div className="flex items-center gap-3">
-        <span className="font-mono text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">
+        <span className={`font-mono text-xs px-2 py-0.5 rounded ${decommissioned ? "bg-slate-100 text-slate-400 line-through" : "bg-slate-100 text-slate-700"}`}>
           {device.kks_full}
         </span>
-        <span className="text-sm text-slate-700">{device.device_type}</span>
+        <span className={`text-sm ${decommissioned ? "text-slate-400" : "text-slate-700"}`}>{device.device_type}</span>
         <span className="text-xs text-slate-400">{device.device_location}</span>
+        {decommissioned && (
+          <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-medium">Decommissioned</span>
+        )}
       </div>
       <span className="text-xs text-slate-400 group-hover:text-blue-600">View →</span>
     </Link>

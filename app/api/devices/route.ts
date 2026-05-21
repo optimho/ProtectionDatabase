@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import { getSession, unauthorized, badRequest } from "@/lib/session";
-import { listDevices, createDevice, getDeviceByKKS } from "@/lib/devices";
+import { listDevices, listAllDevices, createDevice, getDeviceByKKS } from "@/lib/devices";
 import { assembleKKS } from "@/lib/kks";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: Request) {
   const session = await getSession();
   if (!session) return unauthorized();
 
-  const devices = await listDevices();
+  const { searchParams } = new URL(req.url);
+  const includeDecommissioned = searchParams.get("include_decommissioned") === "true";
+  const devices = includeDecommissioned ? await listAllDevices() : await listDevices();
   return NextResponse.json(devices);
 }
 

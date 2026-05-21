@@ -9,15 +9,18 @@ export default function DashboardPage() {
   const [tree, setTree] = useState<DeviceTreeType>({});
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showDecommissioned, setShowDecommissioned] = useState(false);
 
   useEffect(() => {
-    fetch("/api/devices")
+    setLoading(true);
+    const url = showDecommissioned ? "/api/devices?include_decommissioned=true" : "/api/devices";
+    fetch(url)
       .then((r) => r.json())
       .then((devices: Parameters<typeof buildTree>[0]) => {
         setTree(buildTree(devices));
         setLoading(false);
       });
-  }, []);
+  }, [showDecommissioned]);
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -46,6 +49,15 @@ export default function DashboardPage() {
       {/* Device Tree */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-base font-semibold text-slate-700">Devices</h2>
+        <label className="flex items-center gap-2 text-sm text-slate-500 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={showDecommissioned}
+            onChange={(e) => setShowDecommissioned(e.target.checked)}
+            className="rounded border-slate-300"
+          />
+          Show decommissioned
+        </label>
       </div>
 
       <div className="mb-4">
@@ -87,6 +99,9 @@ type RawDevice = {
   kks_component_number: string;
   report_id: string | null;
   device_fields_json: string;
+  decommissioned_at: string | null;
+  decommissioned_by_name: string;
+  decommission_reason: string;
   created_by: string;
   created_at: string;
   updated_at: string;

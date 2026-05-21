@@ -8,6 +8,7 @@ import { getPartByNumber, listManuals } from "@/lib/parts";
 import { getFormTemplateByPartNumber, type FieldSchema } from "@/lib/form-templates";
 import LogPanel from "@/components/LogPanel";
 import LinkReportButton from "@/components/LinkReportButton";
+import DecommissionButton from "./DecommissionButton";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +40,20 @@ export default async function DeviceDetailPage({
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
+      {/* Decommission banner */}
+      {device.decommissioned_at && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+          <p className="text-sm font-semibold text-red-700">DECOMMISSIONED</p>
+          <p className="text-sm text-red-600 mt-0.5">
+            Decommissioned by <span className="font-medium">{device.decommissioned_by_name}</span> on{" "}
+            {device.decommissioned_at.slice(0, 10)}
+          </p>
+          {device.decommission_reason && (
+            <p className="text-sm text-red-500 mt-1">Reason: {device.decommission_reason}</p>
+          )}
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
@@ -47,6 +62,10 @@ export default async function DeviceDetailPage({
           <p className="text-slate-500 text-sm mt-0.5">{device.device_type} — {device.device_location}</p>
         </div>
         <div className="flex gap-2 flex-shrink-0">
+          {!device.decommissioned_at && (
+            <DecommissionButton deviceId={id} />
+          )}
+          <Link href={`/devices/${id}/print`} target="_blank" className="px-3 py-1.5 border border-slate-300 text-slate-700 text-sm rounded-md hover:bg-slate-50">Print</Link>
           <Link href={`/devices/${id}/edit`} className="px-3 py-1.5 border border-slate-300 text-slate-700 text-sm rounded-md hover:bg-slate-50">Edit</Link>
           <Link href={`/devices/${id}/maintenance/new`} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">New Maintenance</Link>
         </div>

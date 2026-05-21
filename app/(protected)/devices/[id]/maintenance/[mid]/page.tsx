@@ -49,9 +49,18 @@ export default function MaintenanceDetailPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <div className="flex items-center gap-2 mb-6">
-        <Link href={`/devices/${id}`} className="text-sm text-slate-500 hover:text-slate-700">← Device</Link>
-        <h1 className="text-xl font-semibold text-slate-900">Maintenance — {record.date}</h1>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <Link href={`/devices/${id}`} className="text-sm text-slate-500 hover:text-slate-700">← Device</Link>
+          <h1 className="text-xl font-semibold text-slate-900">Maintenance — {record.date}</h1>
+        </div>
+        <Link
+          href={`/devices/${id}/maintenance/${mid}/print`}
+          target="_blank"
+          className="px-3 py-1.5 border border-slate-300 text-slate-700 text-sm rounded-md hover:bg-slate-50 flex-shrink-0"
+        >
+          Print
+        </Link>
       </div>
 
       <div className="space-y-5">

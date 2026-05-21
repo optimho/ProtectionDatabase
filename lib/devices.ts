@@ -34,12 +34,19 @@ export interface Device extends KKSParts {
   eipc: number;                       // 1 = EIPC compliance testing required
   maintenance_period_years: number;   // retest interval; 0 means no period set
   device_fields_json: string;         // JSON object: values for form_template fields
+  decommissioned_at: string | null;   // ISO datetime when decommissioned, null = active
+  decommissioned_by_name: string;
+  decommission_reason: string;
   created_by: string;
   created_at: string;
   updated_at: string;
 }
 
 export async function listDevices(): Promise<Device[]> {
+  return query<Device>("SELECT * FROM devices WHERE decommissioned_at IS NULL ORDER BY kks_full");
+}
+
+export async function listAllDevices(): Promise<Device[]> {
   return query<Device>("SELECT * FROM devices ORDER BY kks_full");
 }
 
@@ -136,6 +143,17 @@ export async function updateDevice(id: string, input: Partial<CreateDeviceInput>
  */
 export async function deleteDevice(id: string): Promise<void> {
   await run("DELETE FROM devices WHERE id = ?", [id]);
+}
+
+export async function decommissionDevice(
+  id: string,
+  byName: string,
+  reason: string
+): Promise<void> {
+  await run(
+    `UPDATE devices SET decommissioned_at = datetime('now'), decommissioned_by_name = ?, decommission_reason = ?, updated_at = datetime('now') WHERE id = ?`,
+    [byName, reason, id]
+  );
 }
 
 /**

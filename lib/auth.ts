@@ -1,12 +1,10 @@
 import { betterAuth } from "better-auth";
-import type { Database as BunDatabase } from "bun:sqlite";
+import { Database } from "bun:sqlite";
 
 let _auth: ReturnType<typeof betterAuth> | null = null;
 
 function getAuth() {
   if (!_auth) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { Database } = require("bun:sqlite") as { Database: typeof BunDatabase };
     _auth = betterAuth({
       database: new Database("data/app.db") as unknown as Parameters<typeof betterAuth>[0]["database"],
       emailAndPassword: { enabled: true },

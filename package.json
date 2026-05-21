@@ -7,19 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "init-db": "npx tsx scripts/init-db.ts",
-    "seed-admin": "npx tsx scripts/seed-admin.ts",
-    "migrate": "npx tsx scripts/migrate-add-parts.ts && npx tsx scripts/migrate-part-enhancements.ts && npx tsx scripts/migrate-ansi-elements.ts && npx tsx scripts/migrate-add-maintenance-period.ts && npx tsx scripts/migrate-add-data-reports.ts"
-  },
-  "notes": {
-    "dev": "Run dev with: bun run dev  (NOT bun --bun — better-sqlite3 requires Node.js mode)",
-    "build": "Build with: bun --bun run build",
-    "start": "Run prod with: bun --bun run start",
-    "init-db": "Run once with: bun run init-db"
+    "init-db": "bun --bun scripts/init-db.ts",
+    "seed-admin": "bun --bun scripts/seed-admin.ts",
+    "migrate": "bun --bun scripts/migrate-add-parts.ts && bun --bun scripts/migrate-part-enhancements.ts && bun --bun scripts/migrate-ansi-elements.ts && bun --bun scripts/migrate-add-maintenance-period.ts && bun --bun scripts/migrate-add-data-reports.ts"
   },
   "dependencies": {
     "better-auth": "^1.6.11",
-    "better-sqlite3": "^12.10.0",
     "fflate": "^0.8.3",
     "nanoid": "^5.1.11",
     "next": "16.2.6",
@@ -28,7 +21,6 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.8.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -43,7 +35,6 @@
     "unrs-resolver"
   ],
   "trustedDependencies": [
-    "better-sqlite3",
     "sharp",
     "unrs-resolver"
   ]

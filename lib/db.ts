@@ -1,11 +1,9 @@
-import type { Database as BunDatabase } from "bun:sqlite";
+import { Database } from "bun:sqlite";
 
-let _db: BunDatabase | null = null;
+let _db: Database | null = null;
 
-function getDb(): BunDatabase {
+function getDb(): Database {
   if (!_db) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { Database } = require("bun:sqlite") as { Database: typeof BunDatabase };
     const db = new Database("data/app.db");
     db.exec("PRAGMA journal_mode=WAL;");
     db.exec("PRAGMA foreign_keys=ON;");
